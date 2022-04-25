@@ -1,0 +1,87 @@
+* {
+    margin: 0;              /* remove all margins */
+    padding: 0;             /* remove all paddings */
+    box-sizing: border-box;
+}
+
+body{
+    height: 100vh;  /* height, full screen */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(rgb(47,150,163), rgb(48,62,143));
+    font-family: sans-serif;
+    color: white;
+    gap: 10%;
+}
+
+#nav-bar {
+    width: 90%;
+    height: 10%;
+    display: flex;
+    flex-direction: row;
+    gap: 3em;
+    padding-top: 1%;
+    padding-left: 5%;
+}
+
+.nav-button {
+    padding-top: 0.4em;
+    font-size: 1.3em;
+}
+
+.middle-section {
+    width: 100%;
+    padding-top: 5%;
+    height: 40%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    font-size: 1.5em;
+}
+
+#not-logged-in {
+    padding-top: 10%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+#logged-in {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+}
+
+#display-report {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 50%;
+    width: 50%;
+    border-style: solid;
+    background-color: white;
+    overflow-y:auto;
+    color: black;
+}
+
+#comm-report {
+    padding-top: 2%;
+    display: flex;
+    flex-direction: column;
+    gap: 2%;
+}
+
+#invoice-content {
+    text-align: left;
+    overflow-y:auto;
+    word-wrap:break-word;
+    padding-bottom: 5px;
+}
+
+#pdf-preview {
+    height: 700px;
+}
