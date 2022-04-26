@@ -8,66 +8,161 @@
 	<title>Invoice Receiving Platform</title>	
 </head>
 <body>
-	<div id="not-logged-in" class="middle-section">
-		<h1 id="homepage-logo">FUDGE Invoice Receive</h1>
-		<form id="login-form" class="forms">
-			<p>Login</p>
-			<input id="email" type="text" placeholder="Email"><br> 
-			<input id="password" type="text" placeholder="Password"><br> 
-			<input id="login-button" type="button" value="LOGIN"><br> 
-			<p>Or</p>
-			<input id="login-register-button" type="button" value="REGISTER">
-		</form>
-		<form id="register-form" class="forms" style="display: none;">
-			<p>Login</p>
-			<input id="register-email" type="text" placeholder="Email"><br> 
-			<input id="register-password" type="text" placeholder="Password"><br> 
-			<input id="register-confirm-password" type="text" placeholder="Confirm Password"><br> 
-			<input id="register-button" type="button" value="REGISTER">
-			<p>Or</p>
-			<input id="register-login-button" type="button" value="LOGIN">
-		</form>
+	<div id="not-logged-in">
+		<div id="nav-bar">
+			<h1>FUDGE INVOICES</h1>
+			<h2 id="nav-bar-faq1" class="nav-button">FAQ</h2>
+		</div>
+		<div id="faq1" class="middle-section" style="display: none;">
+			<h2>FAQS</h2>
+			<p>How can I upload an Invoice?</p>
+			<p><small>You can log in to your account and submit an xml file, or upload via email</p></small></p>
+			<p>How do I send to another account?</p>
+			<p><small>You can log in to your account and enter another user's username to send them an invoice</p></small></p>
+			<p>How do upload via email?</p>
+			<p><small>Send an email containing a raw invoice xml file/s to invoicerecvapi@gmail.com. You can cc or address the email to other recipients and they will also receive the invoice on our platform</p></small></p>
+			<p>Do I need an account to upload via email?</p>
+			<p><small>You don't need an account to upload to our platform via email. We will save your invoice and email along with it so it is accessible to you, or any other recipients, if you join our platform in the future.</p></small></p>
+			<p>What invoices will be accepted?</p>
+			<p><small>Invoices that comply with Australian ubl invoice standards will be accepted. For more information see <a href="https://github.com/A-NZ-PEPPOL/A-NZ-PEPPOL-BIS-3.0">link text</a> </p></small></p>
+			<p>How can I get in touch with Invoice Platform?</p>
+			<p><small>Send us an email at invoicerecvapi@gmail.com </p></small></p><br>
+		</div>
+		<h1 id="homepage-logo" class="logo">FUDGE Invoice Receive</h1>
+		<div class="form-section">
+			<div id="login-form" class="forms">
+				<h3>Login</h3>
+				<input id="email" type="text" placeholder="Email" class="textbox">
+				<input id="password" type="password" placeholder="Password" class="textbox" autocomplete="off">
+				<input id="login-button" type="button" value="Login" class="button">
+				<p style="font-size: 80%;">Don't have an account?</p>
+				<input id="login-register-button" type="button" value="Register" class="button"> 
+				<p style="font-size: 80%;">Forgot password?</p>
+				<input id="login-forgot-password" type="button" value="Forgot Password" class="medium-btn"> 
+				<br><br>
+				<input id="contact" type="button" value="CONTACT" class="button">
+			</div>
+			<div id="contact-form" class="forms" style="display: none;">
+				<p>Email: invoicerecvapi@gmail.com</p>
+			</div>
+			<div id="register-form" class="forms" style="display: none;">
+				<h3>Register</h3>
+				<input id="register-email" type="text" placeholder="Email" class="textbox"><br> 
+				<input id="register-password" type="password" placeholder="Password" class="textbox" autocomplete="off"><br> 
+				<input id="register-confirm-password" type="password" placeholder="Confirm Password" class="textbox" autocomplete="off"><br> 
+				<input id="register-button" type="button" value="Register" class="button">
+				<p>Or</p>
+				<input id="register-login-button" type="button" value="Login" class="button">
+			</div>
+			<div id="reset-req-form" class="forms" style="display: none;">
+				<h3>Reset Password</h3>
+				<p>receive reset code via email</p>
+				<input id="account-email" type="text" placeholder="Email" class="textbox"><br> 
+				<input id="forgot-password-button" type="button" value="get code" class="button">
+			</div>
+			<div id="reset-form" class="forms" style="display: none;">
+				<h3>Reset Password</h3>
+				<p>receive reset code via email</p>
+				<input id="reset-code" type="text" placeholder="reset code" 
+				class="textbox" autocomplete="off"><br> 
+				<input id="new-password" type="password" placeholder="new password" class="textbox"><br> 
+				<input id="confirm-password" type="password" placeholder="confirm password" class="textbox" autocomplete="off"><br> 
+				<input id="reset-password" type="button" value="reset" class="button" autocomplete="off">
+			</div>
+			<div id="new-password-form" class="forms" style="display: none;">
+				<h3>Reset Password</h3>
+			</div>
+		</div>
 		<div id="login-popup" style="display: none;">
 			<p id="login-popup-message">error</p>
-			<input id="login-popup-close" type="button" value="CLOSE">
+			<input id="login-popup-close" type="button" value="Close" class="button">
 		</div>
 	</div>
 	<div id="logged-in" style="display: none;">
 		<div id="nav-bar">
 			<h1>FUDGE Invoice Receive</h1>
+			<h2 id="page-title" class="nav-button"></h2>
 			<h2 id="nav-bar-upload" class="nav-button">UPLOAD</h2>
 			<h2 id="nav-bar-reports" class="nav-button">REPORTS</h2>
 			<h2 id="nav-bar-invoices" class="nav-button">INVOICES</h2>
+			<h2 id="nav-bar-account" class="nav-button">ACCOUNT</h2>
+			<h2 id="nav-bar-faq" class="nav-button">FAQ</h2>
+			<h2 id="nav-bar-logout" class="nav-button">LOG OUT</h2>
 		</div>
 		<div id="upload" class="middle-section">
 			<h2>Upload Invoice</h2>
 			<p>Upload a valid invoice</p>
 			<form id="xmlForm" name="xmlForm">
 				<input id="invoice" type="file"> 
-				<input id="upload-button" type="button" value="SUBMIT">
+				<input id="upload-button" type="button" value="Submit" class="button">
+			</form>
+			<p>Send invoice to someone</p>
+			<form id="xmlForm1" name="xmlForm1">
+				<input id="invoice1" type="file"> 
+				<input id="username" type="text" placeholder="username"
+				class="textbox">
+				<input id="upload-button1" type="button" value="Send" class="button">
 			</form>
 		</div>
 		<div id="invoices" class="middle-section" style="display: none;">
 			<h2>Search invoices</h2>
 			<p>Enter an invoice ID</p>
 			<form>
-				<input id="invoiceId2" type="text" placeholder="id"> 
-				<input id="invoices-button" type='button' value="SEARCH">
+				<input id="invoiceId2" type="text" placeholder="id" class="textbox"> 
+				<input id="invoices-button" type='button' value="Search" class="button">
 			</form>
+		</div>
+		<div id="faq" class="middle-section" style="display: none;">
+			<h2>FAQS</h2>
+			<p>How can I upload an Invoice?</p>
+			<p><small>You can log in to your account and submit an xml file, or upload via email</p></small></p>
+			<p>How do I send to another account?</p>
+			<p><small>You can log in to your account and enter another user's username to send them an invoice</p></small></p>
+			<p>How do upload via email?</p>
+			<p><small>Send an email containing a raw invoice xml file/s to invoicerecvapi@gmail.com. You can cc or address the email to other recipients and they will also receive the invoice on our platform</p></small></p>
+			<p>Do I need an account to upload via email?</p>
+			<p><small>You don't need an account to upload to our platform via email. We will save your invoice and email along with it so it is accessible to you, or any other recipients, if you join our platform in the future.</p></small></p>
+			<p>What invoices will be accepted?</p>
+			<p><small>Invoices that comply with Australian ubl invoice standards will be accepted. For more information see <a href="https://github.com/A-NZ-PEPPOL/A-NZ-PEPPOL-BIS-3.0">link text</a> </p></small></p>
+			<p>How can I get in touch with Invoice Platform?</p>
+			<p><small>Send us an email at invoicerecvapi@gmail.com </p></small></p><br>
+		</div>
+		<div id="account" class="middle-section" style="display: none;">
+			<h2>Update Account Information</h2>
+			<p>Reset email</p>
+			<form>
+				<input id="reset-email" type="text" placeholder="new email" class="textbox"> 
+				<input id="password1" type="password" placeholder="password" class="textbox" autocomplete="off"> 
+				<input id="email-button" type='button' value="Confirm" class="button">
+			</form>
+			<p>Or</p>
+			<p>Update username</p>
+			<form>
+				<input id="updateUsername" type="text" placeholder="new username" class="textbox"> 
+				<input id="password2" type="password" placeholder="password" class="textbox" autocomplete="off"> 
+				<input id="username-button" type='button' value="Confirm" class="button">
+			</form>	
+			<p>Or</p>
+			<p>DELETE ACCOUNT</p>
+			<form>
+				<input id="password3" type="password" placeholder="password" class="textbox"> 
+				<input id="password4" type="password" placeholder="confirm password" class="textbox" autocomplete="off"> 
+				<input id="delete-account-button" type='button' value="DELETE" class="button">
+			</form>			
 		</div>
 		<div id="reports" class="middle-section" style="display: none;">
 			<h2>Search Communication Reports</h2>
 			<p>Enter a valid invoice ID or name</p>
 			<form>
-				<input id="invoiceIdName" type="text" placeholder="name or id"> 
-				<input id="reports-button" type='button' value="SEARCH">
+				<input id="invoiceIdName" type="text" placeholder="name or id" class="textbox"> 
+				<input id="reports-button" type='button' value="Search" class="button">
 			</form>
 		</div>
 		<div id="display-report" style="display: none;">
+		</div>
+		<div id="display-invoice" style="display: none;">
 		</div>
 	</div>
     <script type="module" src="main.js"></script>	
 </body>
 </html>
-
-<!-- Want a homepage with options upload or search-->

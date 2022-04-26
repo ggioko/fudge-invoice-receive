@@ -22,10 +22,9 @@ def gen_report(invoice_id, comm_status, invoice_name, u_id):
     db = data_base.get()
     ### need to generate a communication report id
     comm_reps = db['communication_reports']
-    comm_rep_id = uuid.uuid4().int
+    comm_rep_id = uuid.uuid4().int  & 0xFFFFFFFF
     while any(comm_rep['comm_rep_id'] == comm_rep_id for comm_rep in comm_reps):
-        comm_rep_id = uuid.uuid4().int
-    comm_rep_id = comm_rep_id & 0xFFFFFFFF
+        comm_rep_id = uuid.uuid4().int & 0xFFFFFFFF
     time_now = datetime.now()
     dt_string = time_now.strftime("%d/%m/%Y %H:%M:%S")
     recvd = False
@@ -41,7 +40,7 @@ def gen_report(invoice_id, comm_status, invoice_name, u_id):
 
     # comm report for no errors
     if comm_status == 'OK':
-        comm_msg = "Invoice " + str(invoice_id) + " was successfully uploaded."
+        comm_msg = "You have received a new invoice! Invoice " + str(invoice_id) + " was successfully uploaded."
         communication_report = {
             'comm_time': dt_string,
             'recvd': True,
@@ -50,12 +49,24 @@ def gen_report(invoice_id, comm_status, invoice_name, u_id):
             'invoice_name': invoice_name,
             'comm_rep_id': comm_rep_id
         }
-    db['communication_reports'].append(communication_report)
+
+    if (comm_status == 'SENT'):
+        comm_msg = "Invoice " + str(invoice_id) + " was successfully sent."
+        communication_report = {
+            'comm_time': dt_string,
+            'recvd': True,
+            'invoice_id': invoice_id,
+            'comm_msg': comm_msg,
+            'invoice_name': invoice_name,
+            'comm_rep_id': comm_rep_id
+        }
+    
+    db['communication_reports'].insert(0,communication_report)
 
     ## link this communication report to the users account
     for account in db['accounts']:
         if account['u_id'] == u_id:
-            account['comm_reps'].append(comm_rep_id)
+            account['comm_reps'].insert(0,comm_rep_id)
             data_base.set(db)
             return communication_report
 

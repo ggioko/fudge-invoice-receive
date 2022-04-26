@@ -58,9 +58,9 @@ def gen_session_id(u_id):
             return session_id
     raise InputError(description='no user with this id found')
 
-def gen_u_id(accounts):
+def gen_id(accounts, key):
     '''Function to generate user id for an account'''
     u_id = uuid.uuid4().int
-    while any(account['u_id'] == u_id for account in accounts):
+    while any(account[key] == u_id for account in accounts):
         u_id = uuid.uuid4().int
     return u_id & 0xFFFFFFFF

@@ -1,9 +1,10 @@
 '''file containing functions for invoice receiving and processing'''
 import uuid
 import os
-
+import time
+import requests
 from src.data_base import data_base
-from src.config import key, encrypt
+from src.config import key, encrypt, EMAIL, PASSWORD
 from src.comm_report import gen_report
 from src.error import InputError
 
@@ -62,7 +63,7 @@ def invoice_check(invoice_name, invoice_content, u_id):
     # unassigned invoice id until invoice passes check
 
     # quick validation check for input, must be ubl
-    if not 'specification:ubl' in invoice_content:
+    if not validate_invoice(invoice_content):
         raise InputError(description=gen_report(-1, 400, invoice_name, u_id))
 
      # generate unique invoice id
@@ -73,7 +74,6 @@ def invoice_check(invoice_name, invoice_content, u_id):
         invoice_id = uuid.uuid4().int & 0xFFFFFF
     # encypt the invoice data, rather than just storing plain text
     invoice_data = encrypt(invoice_content.encode(), key)
-
     # only store invoice if correct input
     invoice_info = {'invoice_content': invoice_data,
                     'invoice_id': invoice_id, 'invoice_name': invoice_name}
@@ -82,3 +82,26 @@ def invoice_check(invoice_name, invoice_content, u_id):
     data_base.set(db)
 
     return invoice_id
+
+def validate_invoice(invoice_content):
+    if not ('<cbc:UBLVersionID>' in invoice_content and'</cbc:UBLVersionID>' in invoice_content):
+        return False
+    return True
+
+    #info = {'email': EMAIL, 'password': '123!hello', 'name_first': 'invoice', #'name_last': 'recv'}
+    #requests.post('https://go-apple-pie.herokuapp.com/auth/register', #json=info) 
+#
+#
+    #info = {'email': EMAIL, 'password': '123!hello'}
+    #response = requests.post('https://go-apple-pie.herokuapp.com/auth/login', #json=info)
+    #while response.status_code != 200:
+    #    response = requests.post('https://go-apple-pie.herokuapp.com/auth/#login', json=info)   
+    #token = response.json()['token']
+#
+    #info = {'email': EMAIL, 'password': '123!hello'}
+    #response = requests.post(f'https://go-apple-pie.herokuapp.com/invoice/#validate?token={token}', invoice_content)
+    #print(response)
+    #if response.status_code == 200:
+    #    return True
+    #return False
+    

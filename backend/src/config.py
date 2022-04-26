@@ -24,3 +24,5 @@ SECRET = 'djksfjkanfd'
 # we can receive invoices via this email address
 EMAIL = 'invoicerecvapi@gmail.com'
 PASSWORD = 'teamfudge'
+# Teamfudge1!
+NO_RESET_CODE = -1

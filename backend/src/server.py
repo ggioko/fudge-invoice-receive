@@ -8,7 +8,7 @@ from json import dumps
 from urllib import response
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS, cross_origin
-from src.auth import register, login
+from src.auth import register, login, logout, reset_password_req, reset_password
 from src.data_base import save
 from src.invoice_recv import invoice_recv, clear
 from src.invoice_search import invoice_search_id, invoice_search_name, get_invoice_data
@@ -17,13 +17,16 @@ from src import config
 from src.email_recv import check_email
 from src.invoice_delete import invoice_delete
 import requests
-sys.stdout = sys.stderr = open('log.txt','a')
+from src.invoice_send import invoice_send
+from src.accounts import reset_email, update_username, get_username, delete_account
+
+#sys.stdout = sys.stderr = open('log.txt','a')
 
 app = Flask(__name__)
 # this line is for access control issues
 cors_config = {
     "origins": "*",
-    "methods": ["OPTIONS", "GET", "POST"],
+    "methods": ["OPTIONS", "GET", "POST", "DELETE"],
     "allow_headers": ["Authorization", "Content-Type"]
 }
 
@@ -36,7 +39,7 @@ def email_recv():
     while True:
         check_email()
         save()
-        time.sleep(5)
+        time.sleep(20)
 
 
 
@@ -75,12 +78,14 @@ def invoice_receive():
 
 @app.route('/auth_register/', methods=['POST'])
 def register_user():
+    # send an email when they register for an account
     '''route for register for an account'''
     data = request.get_json()
     email = data['email']
     password = data['password']
+    info = (register(email, password))
     save()
-    return jsonify(register(email, password))
+    return jsonify(info)
 
 @app.route('/auth_login/', methods=['POST'])
 def login_user():
@@ -88,10 +93,71 @@ def login_user():
     data = request.get_json()
     email = data['email']
     password = data['password']
+    info = (login(email, password))
+    return jsonify(info)
+
+@app.route('/auth_logout/', methods=['POST'])
+def logout_user():
+    '''route to logout from a session'''
+    token = request.headers.get('authorization')
+    # check if token c(orrect
+    user = check_token(token)
+    u_id = int(user['u_id'])
+    session_id = user['session_id']
+    info = logout(u_id, session_id)
     save()
-    return jsonify(login(email, password))
+    return jsonify(info)
 
+@app.route('/auth_reset_password_req/', methods=['POST'])
+def password_req():
+    # send an email when they register for an account
+    '''route for resetting an accounts password'''
+    data = request.get_json()
+    email = data['email']
+    info = reset_password_req(email)
+    save()
+    return jsonify(info)
 
+@app.route('/auth_reset_password/', methods=['POST'])
+def password_reset():
+    # send an email when they register for an account
+    '''route for resetting an accounts password'''
+    data = request.get_json()
+    new_password = data['new_password']
+    reset_code = int(data['reset_code'])
+    info = reset_password(reset_code, new_password)
+    save()
+    return jsonify(info)
+
+@app.route('/reset_email/', methods=['POST'])
+def email_reset():
+    token = request.headers.get('authorization')
+    # check if token correct
+    user = check_token(token)
+    # send an email when they register for an account
+    '''route for resetting an accounts password'''
+    data = request.get_json()
+    email= data['email']
+    password = data['password']
+    print(f'details: {email}, {password} \n\n\n')
+    info = reset_email(int(user['u_id']), email, password)
+    save()
+    return jsonify(info)
+
+@app.route('/update_username/', methods=['POST'])
+def username_update():
+    token = request.headers.get('authorization')
+    # check if token correct
+    user = check_token(token)
+    # send an email when they register for an account
+    '''route for resetting an accounts password'''
+    data = request.get_json()
+    username= data['username']
+    print(f'username: {username}\n\n\n')
+    password = data['password']
+    info = update_username(int(user['u_id']), username, password)
+    save()
+    return jsonify(info)
 
 @app.route('/search_id', methods=['GET'])
 def invoice_search_by_id():
@@ -102,6 +168,17 @@ def invoice_search_by_id():
     u_id = int(user['u_id'])
     invoice_id = int(request.args.get('invoice_id'))
     return jsonify(invoice_search_id(invoice_id, u_id))
+
+@app.route('/username', methods=['GET'])
+def find_username():
+    '''get username'''
+    token = request.headers.get('authorization')
+    # check if token correct
+    user = check_token(token)
+    u_id = int(user['u_id'])
+    info = get_username(u_id)
+    save()
+    return jsonify({'username': info})
 
 
 
@@ -135,13 +212,13 @@ def http_clear():
         None
 
     Return Value:
-        Returns {} (empty dictionary)
 
+        Returns {} (empty dictionary)
     '''
     clear()
     return {}
 
-@app.route('/invoice_delete/', methods=['DELETE'])
+@app.route('/invoice_delete', methods=['DELETE'])
 def delete_invoices():
     '''
     Deletes an invoice with the given invoice_id
@@ -167,14 +244,54 @@ def invoice_render():
     # check if token correct
     check_token(token)
     resp = request.get_json()
-    print(resp)
     response = requests.post('https://www.invoicerendering.com/einvoices?renderType=pdf&lang=en', files=resp)
     with open('test.pdf', "wb") as f:
         f.write(response.content)
     return send_file('../test.pdf', mimetype='application/pdf')
 
+@app.route('/invoice_send/', methods=['POST'])
+def send_invoice():
+    '''route for sending/receiving invoices between accounts
+    Arguments: 
+        invoice_name: string
+        invoice_content: string
+    Return: 
+        Communication report
+    '''
+    data = request.get_json()
+    token = request.headers.get('authorization')
+    # check if token correct
+    user = check_token(token)
+    u_id = int(user['u_id'])
+    username = data['username']
+    comm_report = invoice_send(data['invoice_name'], data['invoice_content'], u_id, username)
+    save()
+    return jsonify(comm_report)
+
+@app.route('/delete_account', methods=['DELETE'])
+def account_delete():
+    '''
+    Deletes an invoice with the given invoice_id
+
+    Arguments:
+        invoice_id: int
+        token: token
+    
+    Return Value:
+        Returns communication report
+
+    '''
+    token = request.headers.get('authorization')
+    # check if token correct
+    user = check_token(token)
+    password = request.args.get('password')
+    u_id = int(user['u_id'])
+    delete_account(u_id, password)
+    save()
+    return {}
+
 
 if __name__ == '__main__':
     background_tasks = threading.Thread(target=email_recv, daemon=True)
     background_tasks.start()
-    app.run(port=config.port)
+    app.run(port=config.port, threaded=True)

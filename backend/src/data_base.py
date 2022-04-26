@@ -41,6 +41,7 @@ initial_object = {
     #       'password': string,
     #       'comm_reps': [comm_rep_ids],
     #       'u_id': u_id
+    #       'username': string
     #
     #   }
 
@@ -51,6 +52,11 @@ initial_object = {
     #       'session_ids': [str]
     #
     #   }   
+    'unreg_emails': [],
+    #   {
+    #       email: string
+    #       comm_reps: [comm_rep_ids]
+    #   }
 
 }
 

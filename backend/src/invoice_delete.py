@@ -77,7 +77,7 @@ def gen_delete_report(invoice_id, invoice_name, u_id):
         'invoice_id': invoice_id
     }
 
-    db['communication_reports'].append(communication_report)
+    db['communication_reports'].insert(0,communication_report)
 
     ## link this communication report to the users account
     for account in db['accounts']:
